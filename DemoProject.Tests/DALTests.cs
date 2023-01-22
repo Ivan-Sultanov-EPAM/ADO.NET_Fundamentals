@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using DemoProject.Models;
 using FluentAssertions;
-using System.Collections.Generic;
 using Xunit;
 
 namespace DemoProject.Tests
@@ -135,7 +135,7 @@ namespace DemoProject.Tests
             Dal.GetAllOrders().Should()
                 .BeEquivalentTo(new List<Order> { order1, order2 },
                     config => config
-                    .Excluding(o => o.Id));
+                        .Excluding(o => o.Id));
         }
 
         [Fact]

@@ -1,14 +1,15 @@
-﻿using System.Data.SQLite;
+﻿using System.Data.SqlClient;
+using System.Data.SQLite;
 
 namespace DemoProject.Helpers
 {
     public static class DatabaseHelper
     {
-        public static void CreateDbWithData(this SQLiteConnection connection)
+        public static void CreateDbWithData(this SqlConnection connection)
         {
             connection.Open();
 
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
 
             cmd.Connection = connection;
             cmd.CommandText = "CREATE TABLE products (" +

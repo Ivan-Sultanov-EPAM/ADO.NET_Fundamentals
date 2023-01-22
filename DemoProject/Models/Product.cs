@@ -7,10 +7,10 @@ namespace DemoProject.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Weight { get; set; }
-        public int Height { get; set; }
-        public int Width { get; set; }
-        public int Length { get; set; }
+        public decimal Weight { get; set; }
+        public decimal Height { get; set; }
+        public decimal Width { get; set; }
+        public decimal Length { get; set; }
 
         public new void ToString()
         {

@@ -1,23 +1,23 @@
-﻿using DemoProject.Helpers;
-using DemoProject.Models;
-using System.Collections.Generic;
-using System.Data.SQLite;
+﻿using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using DemoProject.Helpers;
+using DemoProject.Models;
 
 namespace DemoProject
 {
     public class DAL
     {
-        private readonly SQLiteConnection _connection;
+        private readonly SqlConnection _connection;
 
-        public DAL(SQLiteConnection connection)
+        public DAL(SqlConnection connection)
         {
             _connection = connection;
         }
 
         public bool AddProduct(Product product)
         {
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = "INSERT INTO products (name, description, weight, height, width, length) values " +
@@ -35,7 +35,7 @@ namespace DemoProject
         {
             var products = new List<Product>();
 
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = $"SELECT * FROM products WHERE id = {id};";
@@ -43,18 +43,16 @@ namespace DemoProject
             var reader = cmd.ExecuteReader();
 
             while (reader.Read())
-            {
                 products.Add(new Product
                 {
                     Id = reader["id"].ToInt(),
                     Name = reader["name"].ToString(),
                     Description = reader["description"].ToString(),
-                    Weight = reader["weight"].ToInt(),
-                    Height = reader["height"].ToInt(),
-                    Width = reader["width"].ToInt(),
-                    Length = reader["length"].ToInt()
+                    Weight = reader["weight"].ToDecimal(),
+                    Height = reader["height"].ToDecimal(),
+                    Width = reader["width"].ToDecimal(),
+                    Length = reader["length"].ToDecimal()
                 });
-            }
 
             reader.Close();
             return products.SingleOrDefault();
@@ -62,7 +60,7 @@ namespace DemoProject
 
         public bool UpdateProduct(Product product)
         {
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = "UPDATE products SET " +
@@ -78,7 +76,7 @@ namespace DemoProject
 
         public bool DeleteProduct(int id)
         {
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = $"DELETE FROM products WHERE id = {id}";
@@ -90,7 +88,7 @@ namespace DemoProject
         {
             var products = new List<Product>();
 
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = "select * from products;";
@@ -98,18 +96,16 @@ namespace DemoProject
             var reader = cmd.ExecuteReader();
 
             while (reader.Read())
-            {
                 products.Add(new Product
                 {
                     Id = reader["id"].ToInt(),
                     Name = reader["name"].ToString(),
                     Description = reader["description"].ToString(),
-                    Weight = reader["weight"].ToInt(),
-                    Height = reader["height"].ToInt(),
-                    Width = reader["width"].ToInt(),
-                    Length = reader["length"].ToInt()
+                    Weight = reader["weight"].ToDecimal(),
+                    Height = reader["height"].ToDecimal(),
+                    Width = reader["width"].ToDecimal(),
+                    Length = reader["length"].ToDecimal()
                 });
-            }
 
             reader.Close();
             return products;
@@ -117,7 +113,7 @@ namespace DemoProject
 
         public bool AddOrder(Order order)
         {
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = "INSERT INTO orders (status, created_date, updated_date, product_id) values " +
@@ -133,7 +129,7 @@ namespace DemoProject
         {
             var orders = new List<Order>();
 
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = $"SELECT * FROM orders WHERE id = {id};";
@@ -141,7 +137,6 @@ namespace DemoProject
             var reader = cmd.ExecuteReader();
 
             while (reader.Read())
-            {
                 orders.Add(new Order
                 {
                     Id = reader["id"].ToInt(),
@@ -150,7 +145,6 @@ namespace DemoProject
                     UpdatedDate = reader["updated_date"].ToDate(),
                     ProductId = reader["product_id"].ToInt()
                 });
-            }
 
             reader.Close();
             return orders.SingleOrDefault();
@@ -158,7 +152,7 @@ namespace DemoProject
 
         public bool UpdateOrder(Order order)
         {
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = "UPDATE orders SET " +
@@ -172,7 +166,7 @@ namespace DemoProject
 
         public bool DeleteOrder(int id)
         {
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = $"DELETE FROM orders WHERE id = {id}";
@@ -184,7 +178,7 @@ namespace DemoProject
         {
             var orders = new List<Order>();
 
-            using var cmd = new SQLiteCommand();
+            using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
             cmd.CommandText = "select * from orders;";
@@ -192,7 +186,6 @@ namespace DemoProject
             var reader = cmd.ExecuteReader();
 
             while (reader.Read())
-            {
                 orders.Add(new Order
                 {
                     Id = reader["id"].ToInt(),
@@ -201,10 +194,33 @@ namespace DemoProject
                     UpdatedDate = reader["updated_date"].ToDate(),
                     ProductId = reader["product_id"].ToInt()
                 });
-            }
 
             reader.Close();
             return orders;
+        }
+
+        public void ClearAllData()
+        {
+            //foreach (var order in GetAllOrders())
+            //    DeleteOrder(order.Id);
+
+            //foreach (var product in GetAllProducts())
+            //    DeleteProduct(product.Id);
+
+            //using var cmd = new SqlCommand();
+            //cmd.Connection = _connection;
+
+            //cmd.CommandText = "DBCC CHECKIDENT ('Products', RESEED, 0);";
+            //cmd.ExecuteNonQuery();
+
+            //cmd.CommandText = "DBCC CHECKIDENT ('Orders', RESEED, 0);";
+            //cmd.ExecuteNonQuery();
+
+            using var cmd = new SqlCommand();
+            cmd.Connection = _connection;
+
+            cmd.CommandText = "EXEC spClearDb;";
+            cmd.ExecuteNonQuery();
         }
     }
 }
