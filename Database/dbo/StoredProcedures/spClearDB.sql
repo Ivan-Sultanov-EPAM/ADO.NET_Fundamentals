@@ -1,13 +1,13 @@
 ﻿CREATE PROCEDURE [dbo].[spClearDB]
 AS
  BEGIN
-	TRUNCATE TABLE orders
+	TRUNCATE TABLE Orders
 
-	ALTER TABLE orders DROP CONSTRAINT FK_Orders_Products
+	ALTER TABLE Orders DROP CONSTRAINT FK_Orders_Products
 
-	TRUNCATE TABLE products
+	TRUNCATE TABLE Products
 
-	ALTER TABLE orders
+	ALTER TABLE Orders
 	ADD CONSTRAINT FK_Orders_Products
 	FOREIGN KEY (product_id) REFERENCES Products(Id);
  END

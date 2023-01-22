@@ -201,21 +201,6 @@ namespace DemoProject
 
         public void ClearAllData()
         {
-            //foreach (var order in GetAllOrders())
-            //    DeleteOrder(order.Id);
-
-            //foreach (var product in GetAllProducts())
-            //    DeleteProduct(product.Id);
-
-            //using var cmd = new SqlCommand();
-            //cmd.Connection = _connection;
-
-            //cmd.CommandText = "DBCC CHECKIDENT ('Products', RESEED, 0);";
-            //cmd.ExecuteNonQuery();
-
-            //cmd.CommandText = "DBCC CHECKIDENT ('Orders', RESEED, 0);";
-            //cmd.ExecuteNonQuery();
-
             using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
