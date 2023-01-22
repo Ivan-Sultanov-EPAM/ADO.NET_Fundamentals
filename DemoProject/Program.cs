@@ -34,6 +34,17 @@ namespace DemoProject
                 Length = 176
             });
 
+            var test = dal.UpdateProduct(new Product
+            {
+                Id = 1,
+                Name = "Vacuum",
+                Description = "Vacuum Robot",
+                Weight = 3,
+                Height = 8,
+                Width = 50,
+                Length = 50
+            });
+
             var products = dal.GetAllProducts();
 
 
@@ -57,6 +68,8 @@ namespace DemoProject
                 order.ToString();
             }
 
+            dal.GetProductById(2).ToString();
+            dal.GetOrderById(2).ToString();
         }
     }
 }
