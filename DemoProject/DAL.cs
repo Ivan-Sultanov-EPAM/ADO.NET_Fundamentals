@@ -76,6 +76,16 @@ namespace DemoProject
             return cmd.ExecuteNonQuery() == 1;
         }
 
+        public bool DeleteProduct(int id)
+        {
+            using var cmd = new SQLiteCommand();
+            cmd.Connection = _connection;
+
+            cmd.CommandText = $"DELETE FROM products WHERE id = {id}";
+
+            return cmd.ExecuteNonQuery() == 1;
+        }
+
         public List<Product> GetAllProducts()
         {
             var products = new List<Product>();
@@ -151,11 +161,21 @@ namespace DemoProject
             using var cmd = new SQLiteCommand();
             cmd.Connection = _connection;
 
-            cmd.CommandText = "UPDATE orders SET" +
+            cmd.CommandText = "UPDATE orders SET " +
                               $"status = '{order.Status}'," +
                               $"created_date = '{order.CreatedDate}'," +
                               $"updated_date = '{order.UpdatedDate}'," +
                               $"product_id = {order.ProductId} WHERE id = {order.Id}";
+
+            return cmd.ExecuteNonQuery() == 1;
+        }
+
+        public bool DeleteOrder(int id)
+        {
+            using var cmd = new SQLiteCommand();
+            cmd.Connection = _connection;
+
+            cmd.CommandText = $"DELETE FROM orders WHERE id = {id}";
 
             return cmd.ExecuteNonQuery() == 1;
         }

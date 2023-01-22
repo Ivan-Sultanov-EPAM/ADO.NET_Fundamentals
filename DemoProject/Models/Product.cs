@@ -15,8 +15,8 @@ namespace DemoProject.Models
         public new void ToString()
         {
             Console.WriteLine(Id.ToString());
-            Console.WriteLine(Name.ToString());
-            Console.WriteLine(Description.ToString());
+            Console.WriteLine(Name);
+            Console.WriteLine(Description);
             Console.WriteLine(Weight.ToString());
             Console.WriteLine(Height.ToString());
             Console.WriteLine(Width.ToString());
