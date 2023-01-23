@@ -33,7 +33,7 @@ namespace DemoProject.Tests
             new Order
             {
                 Status = OrderStatus.NotStarted,
-                CreatedDate = new DateTime(2022, 12, 7),
+                CreatedDate = new DateTime(2022, 1, 7),
                 UpdatedDate = new DateTime(2022, 12, 7),
                 ProductId = 1
             },
@@ -42,6 +42,20 @@ namespace DemoProject.Tests
                 Status = OrderStatus.Done,
                 CreatedDate = new DateTime(2023, 1, 17),
                 UpdatedDate = new DateTime(2023, 2, 25),
+                ProductId = 2
+            },
+            new Order
+            {
+                Status = OrderStatus.Arrived,
+                CreatedDate = new DateTime(2025, 5, 3),
+                UpdatedDate = new DateTime(2025, 8, 7),
+                ProductId = 1
+            },
+            new Order
+            {
+                Status = OrderStatus.Loading,
+                CreatedDate = new DateTime(2024, 1, 17),
+                UpdatedDate = new DateTime(2024, 6, 25),
                 ProductId = 2
             }
         };
