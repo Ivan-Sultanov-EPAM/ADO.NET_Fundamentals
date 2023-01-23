@@ -39,9 +39,9 @@ namespace DemoProject.Tests
             },
             new Order
             {
-                Status = OrderStatus.NotStarted,
-                CreatedDate = new DateTime(2023, 1, 12),
-                UpdatedDate = new DateTime(2023, 1, 12),
+                Status = OrderStatus.Done,
+                CreatedDate = new DateTime(2023, 1, 17),
+                UpdatedDate = new DateTime(2023, 2, 25),
                 ProductId = 2
             }
         };

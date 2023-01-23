@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using DemoProject.Helpers;
 using DemoProject.Models;
 using FluentAssertions;
 using Xunit;
@@ -171,6 +173,32 @@ namespace DemoProject.Tests
 
             Dal.GetAllOrders().Should()
                 .BeEquivalentTo(new List<Order> { order2 },
+                    config => config
+                        .Excluding(p => p.Id));
+        }
+
+        [Fact]
+        public void Should_Get_Filtered_Orders()
+        {
+            AddProducts();
+
+            var order1 = DataSource.Orders[0];
+            var order2 = DataSource.Orders[1];
+
+            Dal.AddOrder(order1);
+            Dal.AddOrder(order2);
+
+            var year = 2023;
+            var month = 1;
+            var status = OrderStatus.InProgress;
+
+            var test = Dal.GetFilteredOrders(
+                year: year,
+                month: month,
+                status: status);
+
+            Dal.GetAllOrders().Should()
+                .BeEquivalentTo(new List<Order> { order1, order2 },
                     config => config
                         .Excluding(p => p.Id));
         }

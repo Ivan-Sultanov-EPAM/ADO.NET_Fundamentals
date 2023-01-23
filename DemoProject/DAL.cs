@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using DemoProject.Helpers;
@@ -182,6 +184,41 @@ namespace DemoProject
             cmd.Connection = _connection;
 
             cmd.CommandText = "select * from orders;";
+
+            var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                orders.Add(new Order
+                {
+                    Id = reader["id"].ToInt(),
+                    Status = reader["status"].ToOrderStatus(),
+                    CreatedDate = reader["created_date"].ToDate(),
+                    UpdatedDate = reader["updated_date"].ToDate(),
+                    ProductId = reader["product_id"].ToInt()
+                });
+
+            reader.Close();
+            return orders;
+        }
+
+        public List<Order> GetFilteredOrders(
+            int? year = null,
+            int? month = null,
+            OrderStatus? status = null,
+            int? product = null)
+        {
+            var orders = new List<Order>();
+
+            using var cmd = new SqlCommand();
+            cmd.Connection = _connection;
+
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "spGetFilteredOrders";
+
+            cmd.Parameters.Add("@Year", SqlDbType.Int).Value = year;
+            cmd.Parameters.Add("@Month", SqlDbType.Int).Value = month;
+            cmd.Parameters.Add("@Status", SqlDbType.VarChar).Value = status;
+            cmd.Parameters.Add("@Product", SqlDbType.Int).Value = product;
 
             var reader = cmd.ExecuteReader();
 
