@@ -178,7 +178,7 @@ namespace DemoProject.Tests
         }
 
         [Theory]
-        [MemberData(nameof(GetTestData))]
+        [MemberData(nameof(GetFilteredOrdersTestData))]
         public void Should_Get_Filtered_Orders(
             int? year,
             int? month,
@@ -205,13 +205,43 @@ namespace DemoProject.Tests
                         .Excluding(p => p.Id));
         }
 
+        [Theory]
+        [MemberData(nameof(DeleteOrdersTestData))]
+        public void Should_Delete_Orders(
+            int? year,
+            int? month,
+            OrderStatus? status,
+            int? product,
+            List<Order> expected)
+        {
+            AddProducts();
+
+            Dal.AddOrder(DataSource.Orders[0]);
+            Dal.AddOrder(DataSource.Orders[1]);
+            Dal.AddOrder(DataSource.Orders[2]);
+            Dal.AddOrder(DataSource.Orders[3]);
+
+            Dal.DeleteOrders(
+                year: year,
+                month: month,
+                status: status,
+                product: product
+            );
+
+            var result = Dal.GetFilteredOrders();
+
+            result.Should()
+                .BeEquivalentTo(expected, config => config
+                    .Excluding(p => p.Id));
+        }
+
         private void AddProducts()
         {
             Dal.AddProduct(DataSource.Products[0]);
             Dal.AddProduct(DataSource.Products[1]);
         }
 
-        public static IEnumerable<object[]> GetTestData()
+        public static IEnumerable<object[]> GetFilteredOrdersTestData()
         {
             var data = new List<object[]>
             {
@@ -250,6 +280,57 @@ namespace DemoProject.Tests
                 new object[] { 2023, 1, OrderStatus.Done, 2, new List<Order>
                 {
                     DataSource.Orders[1]
+                }}
+            };
+
+            return data;
+        }
+
+        public static IEnumerable<object[]> DeleteOrdersTestData()
+        {
+            var data = new List<object[]>
+            {
+                new object[] { null, null, null, null, new List<Order>()},
+                new object[] { 2023, null, null, null, new List<Order>
+                {
+                    DataSource.Orders[0],
+                    DataSource.Orders[2],
+                    DataSource.Orders[3]
+                }},
+                new object[] { null, 5, null, null, new List<Order>
+                {
+                    DataSource.Orders[0],
+                    DataSource.Orders[1],
+                    DataSource.Orders[3]
+                }},
+                new object[] { null, null, OrderStatus.Loading, null, new List<Order>
+                {
+                    DataSource.Orders[0],
+                    DataSource.Orders[1],
+                    DataSource.Orders[2]
+                }},
+                new object[] { null, null, null, 2, new List<Order>
+                {
+                    DataSource.Orders[0],
+                    DataSource.Orders[2]
+                }},
+                new object[] { 2024, 1, null, null, new List<Order>
+                {
+                    DataSource.Orders[0],
+                    DataSource.Orders[1],
+                    DataSource.Orders[2]
+                }},
+                new object[] { null, 1, OrderStatus.Loading, null, new List<Order>
+                {
+                    DataSource.Orders[0],
+                    DataSource.Orders[1],
+                    DataSource.Orders[2]
+                }},
+                new object[] { 2023, 1, OrderStatus.Done, 2, new List<Order>
+                {
+                    DataSource.Orders[0],
+                    DataSource.Orders[2],
+                    DataSource.Orders[3]
                 }}
             };
 

@@ -236,6 +236,28 @@ namespace DemoProject
             return orders;
         }
 
+        public void DeleteOrders(
+            int? year = null,
+            int? month = null,
+            OrderStatus? status = null,
+            int? product = null)
+        {
+            var orders = new List<Order>();
+
+            using var cmd = new SqlCommand();
+            cmd.Connection = _connection;
+
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "spDeleteOrders";
+
+            cmd.Parameters.Add("@Year", SqlDbType.Int).Value = year;
+            cmd.Parameters.Add("@Month", SqlDbType.Int).Value = month;
+            cmd.Parameters.Add("@Status", SqlDbType.VarChar).Value = status;
+            cmd.Parameters.Add("@Product", SqlDbType.Int).Value = product;
+            
+            cmd.ExecuteNonQuery();
+        }
+
         public void ClearAllData()
         {
             using var cmd = new SqlCommand();

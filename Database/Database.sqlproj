@@ -67,6 +67,7 @@
     <Build Include="dbo\Tables\Orders.sql" />
     <Build Include="dbo\StoredProcedures\spClearDB.sql" />
     <Build Include="dbo\StoredProcedures\spGetFilteredOrders.sql" />
+    <Build Include="dbo\StoredProcedures\spDeleteOrders.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Publish\Database.publish.xml" />
