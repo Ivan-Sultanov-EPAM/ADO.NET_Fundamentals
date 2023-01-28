@@ -10,8 +10,6 @@ namespace DemoProject
 {
     public class DalDisconnected
     {
-        private readonly SqlConnection _connection;
-
         private readonly SqlDataAdapter _productDataAdapter;
         private readonly DataSet _productDataSet;
         private readonly DataTable _productTable;
@@ -22,9 +20,7 @@ namespace DemoProject
 
         public DalDisconnected(SqlConnection connection)
         {
-            _connection = connection;
-
-            _productDataAdapter = new SqlDataAdapter("select * from products;", _connection);
+            _productDataAdapter = new SqlDataAdapter("select * from products;", connection);
             _productDataSet = new DataSet();
             _productDataAdapter.FillSchema(_productDataSet, SchemaType.Source, "Products");
             _productDataAdapter.Fill(_productDataSet, "Products");
@@ -32,13 +28,16 @@ namespace DemoProject
             _productDataSet.Tables["Products"].Columns["id"].AutoIncrementSeed = 1;
             _productTable = _productDataSet.Tables["Products"];
 
-            _orderDataAdapter = new SqlDataAdapter("select * from orders;", _connection);
+            _orderDataAdapter = new SqlDataAdapter("select * from orders;", connection);
             _orderDataSet = new DataSet();
             _orderDataAdapter.FillSchema(_orderDataSet, SchemaType.Source, "Orders");
             _orderDataAdapter.Fill(_orderDataSet, "Orders");
             _orderDataSet.Tables["Orders"].Columns["id"].AutoIncrement = true;
             _orderDataSet.Tables["Orders"].Columns["id"].AutoIncrementSeed = 1;
             _orderTable = _orderDataSet.Tables["Orders"];
+
+            _ = new SqlCommandBuilder(_orderDataAdapter);
+            _ = new SqlCommandBuilder(_productDataAdapter);
         }
 
         public bool AddProduct(Product product)
@@ -53,9 +52,7 @@ namespace DemoProject
             newProduct["length"] = product.Length;
 
             _productTable.Rows.Add(newProduct);
-            
-            _ = new SqlCommandBuilder(_productDataAdapter);
-            
+
             return _productDataAdapter.Update(_productDataSet, "Products") == 1;
         }
 
@@ -90,16 +87,12 @@ namespace DemoProject
             productToUpdate["width"] = product.Width;
             productToUpdate["length"] = product.Length;
 
-            _ = new SqlCommandBuilder(_productDataAdapter);
-
             return _productDataAdapter.Update(_productDataSet, "Products") == 1;
         }
 
         public bool DeleteProduct(int id)
         {
             _productTable.Rows.Find(id).Delete();
-
-            _ = new SqlCommandBuilder(_productDataAdapter);
 
             return _productDataAdapter.Update(_productDataSet, "Products") == 1;
         }
@@ -136,8 +129,6 @@ namespace DemoProject
 
             _orderTable.Rows.Add(newOrder);
 
-            _ = new SqlCommandBuilder(_orderDataAdapter);
-
             return _orderDataAdapter.Update(_orderDataSet, "Orders") == 1;
         }
 
@@ -168,16 +159,12 @@ namespace DemoProject
             orderToUpdate["updated_date"] = order.UpdatedDate;
             orderToUpdate["product_id"] = order.ProductId;
 
-            _ = new SqlCommandBuilder(_orderDataAdapter);
-
             return _orderDataAdapter.Update(_orderDataSet, "Orders") == 1;
         }
 
         public bool DeleteOrder(int id)
         {
             _orderTable.Rows.Find(id).Delete();
-
-            _ = new SqlCommandBuilder(_orderDataAdapter);
 
             return _orderDataAdapter.Update(_orderDataSet, "Orders") == 1;
         }
@@ -286,8 +273,6 @@ namespace DemoProject
             {
                 row.Delete();
             }
-
-            _ = new SqlCommandBuilder(_orderDataAdapter);
 
             _orderDataAdapter.Update(_orderDataSet, "Orders");
         }

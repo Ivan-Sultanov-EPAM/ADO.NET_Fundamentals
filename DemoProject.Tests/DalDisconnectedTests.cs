@@ -8,7 +8,7 @@ namespace DemoProject.Tests
     public partial class DalTests
     {
         [Fact]
-        public void Should_Add_Product2()
+        public void Should_Add_Product_Using_Disconnected_Model()
         {
             var product1 = DataSource.Products[0];
             var product2 = DataSource.Products[0];
@@ -26,7 +26,7 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Get_All_Products2()
+        public void Should_Get_All_Products_Using_Disconnected_Model()
         {
             var product1 = DataSource.Products[0];
             var product2 = DataSource.Products[1];
@@ -43,7 +43,7 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Update_Product2()
+        public void Should_Update_Product_Using_Disconnected_Model()
         {
             var product1 = DataSource.Products[0];
             var product2 = DataSource.Products[1];
@@ -57,7 +57,7 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Get_Product_By_Id2()
+        public void Should_Get_Product_By_Id_Using_Disconnected_Model()
         {
             var product1 = DataSource.Products[0];
             var product2 = DataSource.Products[1];
@@ -75,7 +75,7 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Delete_Product2()
+        public void Should_Delete_Product_Using_Disconnected_Model()
         {
             var product1 = DataSource.Products[0];
             var product2 = DataSource.Products[1];
@@ -92,9 +92,9 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Add_Order2()
+        public void Should_Add_Order_Using_Disconnected_Model()
         {
-            AddProducts2();
+            AddProductsDisconnectedModel();
 
             var order = DataSource.Orders[0];
 
@@ -107,9 +107,9 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Get_All_Orders2()
+        public void Should_Get_All_Orders_Using_Disconnected_Model()
         {
-            AddProducts2();
+            AddProductsDisconnectedModel();
 
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
@@ -124,9 +124,9 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Update_Order2()
+        public void Should_Update_Order_Using_Disconnected_Model()
         {
-            AddProducts2();
+            AddProductsDisconnectedModel();
 
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
@@ -146,9 +146,9 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Get_Order_By_Id2()
+        public void Should_Get_Order_By_Id_Using_Disconnected_Model()
         {
-            AddProducts2();
+            AddProductsDisconnectedModel();
 
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
@@ -165,9 +165,9 @@ namespace DemoProject.Tests
         }
 
         [Fact]
-        public void Should_Delete_Order2()
+        public void Should_Delete_Order_Using_Disconnected_Model()
         {
-            AddProducts2();
+            AddProductsDisconnectedModel();
 
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
@@ -184,14 +184,14 @@ namespace DemoProject.Tests
 
         [Theory]
         [MemberData(nameof(GetFilteredOrdersTestData))]
-        public void Should_Get_Filtered_Orders2(
+        public void Should_Get_Filtered_Orders_Using_Disconnected_Model(
             int? year,
             int? month,
             OrderStatus? status,
             int? product,
             List<Order> expected)
         {
-            AddProducts2();
+            AddProductsDisconnectedModel();
 
             DalDisconnected.AddOrder(DataSource.Orders[0]);
             DalDisconnected.AddOrder(DataSource.Orders[1]);
@@ -212,14 +212,14 @@ namespace DemoProject.Tests
 
         [Theory]
         [MemberData(nameof(DeleteOrdersTestData))]
-        public void Should_Delete_Orders2(
+        public void Should_Delete_Orders_Using_Disconnected_Model(
             int? year,
             int? month,
             OrderStatus? status,
             int? product,
             List<Order> expected)
         {
-            AddProducts();
+            AddProductsConnectedModel();
 
             DalDisconnected.AddOrder(DataSource.Orders[0]);
             DalDisconnected.AddOrder(DataSource.Orders[1]);
@@ -233,7 +233,7 @@ namespace DemoProject.Tests
                 product: product
             );
 
-            var result = DalDisconnected.GetFilteredOrders();
+            var result = DalDisconnected.GetAllOrders();
 
             result.Should()
                 .BeEquivalentTo(expected, config => config
