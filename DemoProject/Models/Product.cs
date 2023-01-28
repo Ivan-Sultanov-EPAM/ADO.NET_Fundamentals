@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DemoProject.Models
+﻿namespace DemoProject.Models
 {
     public class Product
     {
@@ -11,17 +9,5 @@ namespace DemoProject.Models
         public decimal Height { get; set; }
         public decimal Width { get; set; }
         public decimal Length { get; set; }
-
-        public new void ToString()
-        {
-            Console.WriteLine(Id.ToString());
-            Console.WriteLine(Name);
-            Console.WriteLine(Description);
-            Console.WriteLine(Weight.ToString());
-            Console.WriteLine(Height.ToString());
-            Console.WriteLine(Width.ToString());
-            Console.WriteLine(Length.ToString());
-            Console.WriteLine();
-        }
     }
 }

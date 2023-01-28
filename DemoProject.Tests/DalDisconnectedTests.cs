@@ -34,8 +34,6 @@ namespace DemoProject.Tests
             DalDisconnected.AddProduct(product1);
             DalDisconnected.AddProduct(product2);
 
-            var result2 = DalDisconnected.GetAllProducts();
-
             DalDisconnected.GetAllProducts().Should()
                 .BeEquivalentTo(new List<Product> { product1, product2 },
                     config => config
