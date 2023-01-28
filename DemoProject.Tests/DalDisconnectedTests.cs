@@ -169,6 +169,7 @@ namespace DemoProject.Tests
 
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
+
             DalDisconnected.AddOrder(order1);
             DalDisconnected.AddOrder(order2);
 
@@ -217,7 +218,7 @@ namespace DemoProject.Tests
             int? product,
             List<Order> expected)
         {
-            AddProductsConnectedModel();
+            AddProductsDisconnectedModel();
 
             DalDisconnected.AddOrder(DataSource.Orders[0]);
             DalDisconnected.AddOrder(DataSource.Orders[1]);
@@ -229,7 +230,7 @@ namespace DemoProject.Tests
                 month: month,
                 status: status,
                 product: product
-            );
+            ).Should().BeTrue();
 
             var result = DalDisconnected.GetAllOrders();
 

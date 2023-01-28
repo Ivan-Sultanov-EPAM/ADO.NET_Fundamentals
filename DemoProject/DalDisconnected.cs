@@ -10,31 +10,37 @@ namespace DemoProject
 {
     public class DalDisconnected
     {
+        private readonly DataSet _dataSet;
+
         private readonly SqlDataAdapter _productDataAdapter;
-        private readonly DataSet _productDataSet;
         private readonly DataTable _productTable;
 
         private readonly SqlDataAdapter _orderDataAdapter;
-        private readonly DataSet _orderDataSet;
         private readonly DataTable _orderTable;
 
         public DalDisconnected(SqlConnection connection)
         {
+            _dataSet = new DataSet();
             _productDataAdapter = new SqlDataAdapter("select * from products;", connection);
-            _productDataSet = new DataSet();
-            _productDataAdapter.FillSchema(_productDataSet, SchemaType.Source, "Products");
-            _productDataAdapter.Fill(_productDataSet, "Products");
-            _productDataSet.Tables["Products"].Columns["id"].AutoIncrement = true;
-            _productDataSet.Tables["Products"].Columns["id"].AutoIncrementSeed = 1;
-            _productTable = _productDataSet.Tables["Products"];
+            
+            _productDataAdapter.FillSchema(_dataSet, SchemaType.Source, "Products");
+            _productDataAdapter.Fill(_dataSet, "Products");
+            _dataSet.Tables["Products"].Columns["id"].AutoIncrement = true;
+            _dataSet.Tables["Products"].Columns["id"].AutoIncrementSeed = 1;
+            _productTable = _dataSet.Tables["Products"];
 
             _orderDataAdapter = new SqlDataAdapter("select * from orders;", connection);
-            _orderDataSet = new DataSet();
-            _orderDataAdapter.FillSchema(_orderDataSet, SchemaType.Source, "Orders");
-            _orderDataAdapter.Fill(_orderDataSet, "Orders");
-            _orderDataSet.Tables["Orders"].Columns["id"].AutoIncrement = true;
-            _orderDataSet.Tables["Orders"].Columns["id"].AutoIncrementSeed = 1;
-            _orderTable = _orderDataSet.Tables["Orders"];
+            _orderDataAdapter.FillSchema(_dataSet, SchemaType.Source, "Orders");
+            _orderDataAdapter.Fill(_dataSet, "Orders");
+            _dataSet.Tables["Orders"].Columns["id"].AutoIncrement = true;
+            _dataSet.Tables["Orders"].Columns["id"].AutoIncrementSeed = 1;
+            _orderTable = _dataSet.Tables["Orders"];
+
+            var ordersProductsFk = new ForeignKeyConstraint("OrdersProductsFK",
+                _dataSet.Tables["Products"].Columns["id"],
+                _dataSet.Tables["Orders"].Columns["product_id"]);
+            ordersProductsFk.DeleteRule = Rule.None;
+            _dataSet.Tables["Orders"].Constraints.Add(ordersProductsFk);
 
             _ = new SqlCommandBuilder(_orderDataAdapter);
             _ = new SqlCommandBuilder(_productDataAdapter);
@@ -42,7 +48,7 @@ namespace DemoProject
 
         public bool AddProduct(Product product)
         {
-            var newProduct = _productDataSet.Tables["Products"].NewRow();
+            var newProduct = _dataSet.Tables["Products"].NewRow();
 
             newProduct["name"] = product.Name;
             newProduct["description"] = product.Description;
@@ -53,7 +59,7 @@ namespace DemoProject
 
             _productTable.Rows.Add(newProduct);
 
-            return _productDataAdapter.Update(_productDataSet, "Products") == 1;
+            return _productDataAdapter.Update(_dataSet, "Products") == 1;
         }
 
         public Product GetProductById(int id)
@@ -87,14 +93,14 @@ namespace DemoProject
             productToUpdate["width"] = product.Width;
             productToUpdate["length"] = product.Length;
 
-            return _productDataAdapter.Update(_productDataSet, "Products") == 1;
+            return _productDataAdapter.Update(_dataSet, "Products") == 1;
         }
 
         public bool DeleteProduct(int id)
         {
             _productTable.Rows.Find(id).Delete();
 
-            return _productDataAdapter.Update(_productDataSet, "Products") == 1;
+            return _productDataAdapter.Update(_dataSet, "Products") == 1;
         }
 
         public List<Product> GetAllProducts()
@@ -120,7 +126,7 @@ namespace DemoProject
 
         public bool AddOrder(Order order)
         {
-            var newOrder = _orderDataSet.Tables["Orders"].NewRow();
+            var newOrder = _dataSet.Tables["Orders"].NewRow();
 
             newOrder["status"] = order.Status;
             newOrder["created_date"] = order.CreatedDate;
@@ -129,7 +135,7 @@ namespace DemoProject
 
             _orderTable.Rows.Add(newOrder);
 
-            return _orderDataAdapter.Update(_orderDataSet, "Orders") == 1;
+            return _orderDataAdapter.Update(_dataSet, "Orders") == 1;
         }
 
         public Order GetOrderById(int id)
@@ -159,14 +165,14 @@ namespace DemoProject
             orderToUpdate["updated_date"] = order.UpdatedDate;
             orderToUpdate["product_id"] = order.ProductId;
 
-            return _orderDataAdapter.Update(_orderDataSet, "Orders") == 1;
+            return _orderDataAdapter.Update(_dataSet, "Orders") == 1;
         }
 
         public bool DeleteOrder(int id)
         {
             _orderTable.Rows.Find(id).Delete();
 
-            return _orderDataAdapter.Update(_orderDataSet, "Orders") == 1;
+            return _orderDataAdapter.Update(_dataSet, "Orders") == 1;
         }
 
         public List<Order> GetAllOrders()
@@ -237,7 +243,7 @@ namespace DemoProject
             return orders;
         }
 
-        public void DeleteOrders(
+        public bool DeleteOrders(
             int? year = null,
             int? month = null,
             OrderStatus? status = null,
@@ -269,12 +275,14 @@ namespace DemoProject
                     x.Field<int>("product_id") == product);
             }
 
-            foreach (DataRow row in rows)
+            var numOfRowsToDelete = rows.Count();
+
+            foreach (var row in rows)
             {
                 row.Delete();
             }
 
-            _orderDataAdapter.Update(_orderDataSet, "Orders");
+            return _orderDataAdapter.Update(_dataSet, "Orders") == numOfRowsToDelete;
         }
     }
 }
