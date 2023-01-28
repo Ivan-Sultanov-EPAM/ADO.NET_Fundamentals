@@ -1,22 +1,20 @@
-using System;
 using System.Collections.Generic;
-using DemoProject.Helpers;
 using DemoProject.Models;
 using FluentAssertions;
 using Xunit;
 
 namespace DemoProject.Tests
 {
-    public class DALTests : TestBase
+    public partial class DalTests : TestBase
     {
         [Fact]
         public void Should_Add_Product()
         {
             var product = DataSource.Products[0];
 
-            Dal.AddProduct(product).Should().BeTrue();
+            DalConnected.AddProduct(product).Should().BeTrue();
 
-            Dal.GetAllProducts().Should()
+            DalConnected.GetAllProducts().Should()
                 .BeEquivalentTo(new List<Product> { product },
                     config => config
                         .Excluding(p => p.Id));
@@ -28,10 +26,10 @@ namespace DemoProject.Tests
             var product1 = DataSource.Products[0];
             var product2 = DataSource.Products[1];
 
-            Dal.AddProduct(product1);
-            Dal.AddProduct(product2);
+            DalConnected.AddProduct(product1);
+            DalConnected.AddProduct(product2);
 
-            Dal.GetAllProducts().Should()
+            DalConnected.GetAllProducts().Should()
                 .BeEquivalentTo(new List<Product> { product1, product2 },
                     config => config
                         .Excluding(p => p.Id));
@@ -44,10 +42,10 @@ namespace DemoProject.Tests
             var product2 = DataSource.Products[1];
             product2.Id = 1;
 
-            Dal.AddProduct(product1);
-            Dal.UpdateProduct(product2);
+            DalConnected.AddProduct(product1);
+            DalConnected.UpdateProduct(product2);
 
-            Dal.GetAllProducts().Should()
+            DalConnected.GetAllProducts().Should()
                 .BeEquivalentTo(new List<Product> { product2 });
         }
 
@@ -57,14 +55,14 @@ namespace DemoProject.Tests
             var product1 = DataSource.Products[0];
             var product2 = DataSource.Products[1];
 
-            Dal.AddProduct(product1);
-            Dal.AddProduct(product2);
+            DalConnected.AddProduct(product1);
+            DalConnected.AddProduct(product2);
 
-            Dal.GetProductById(1).Should()
+            DalConnected.GetProductById(1).Should()
                 .BeEquivalentTo(product1, config =>
                     config.Excluding(p => p.Id));
 
-            Dal.GetProductById(2).Should()
+            DalConnected.GetProductById(2).Should()
                 .BeEquivalentTo(product2, config =>
                     config.Excluding(p => p.Id));
         }
@@ -75,12 +73,12 @@ namespace DemoProject.Tests
             var product1 = DataSource.Products[0];
             var product2 = DataSource.Products[1];
 
-            Dal.AddProduct(product1);
-            Dal.AddProduct(product2);
+            DalConnected.AddProduct(product1);
+            DalConnected.AddProduct(product2);
 
-            Dal.DeleteProduct(1).Should().BeTrue();
+            DalConnected.DeleteProduct(1).Should().BeTrue();
 
-            Dal.GetAllProducts().Should()
+            DalConnected.GetAllProducts().Should()
                 .BeEquivalentTo(new List<Product> { product2 },
                     config => config
                         .Excluding(p => p.Id));
@@ -93,9 +91,9 @@ namespace DemoProject.Tests
 
             var order = DataSource.Orders[0];
 
-            Dal.AddOrder(order).Should().BeTrue();
+            DalConnected.AddOrder(order).Should().BeTrue();
 
-            Dal.GetAllOrders().Should()
+            DalConnected.GetAllOrders().Should()
                 .BeEquivalentTo(new List<Order> { order },
                     config => config
                         .Excluding(p => p.Id));
@@ -109,10 +107,10 @@ namespace DemoProject.Tests
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
 
-            Dal.AddOrder(order1);
-            Dal.AddOrder(order2);
+            DalConnected.AddOrder(order1);
+            DalConnected.AddOrder(order2);
 
-            Dal.GetAllOrders().Should()
+            DalConnected.GetAllOrders().Should()
                 .BeEquivalentTo(new List<Order> { order1, order2 },
                     config => config
                         .Excluding(p => p.Id));
@@ -125,16 +123,16 @@ namespace DemoProject.Tests
 
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
-            Dal.AddOrder(order1);
-            Dal.AddOrder(order2);
+            DalConnected.AddOrder(order1);
+            DalConnected.AddOrder(order2);
 
             order1.Id = 1;
             order1.Status = OrderStatus.InProgress;
             order1.UpdatedDate = order1.UpdatedDate.AddDays(10);
 
-            Dal.UpdateOrder(order1);
+            DalConnected.UpdateOrder(order1);
 
-            Dal.GetAllOrders().Should()
+            DalConnected.GetAllOrders().Should()
                 .BeEquivalentTo(new List<Order> { order1, order2 },
                     config => config
                         .Excluding(o => o.Id));
@@ -147,14 +145,14 @@ namespace DemoProject.Tests
 
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
-            Dal.AddOrder(order1);
-            Dal.AddOrder(order2);
+            DalConnected.AddOrder(order1);
+            DalConnected.AddOrder(order2);
 
-            Dal.GetOrderById(1).Should()
+            DalConnected.GetOrderById(1).Should()
                 .BeEquivalentTo(order1, config =>
                     config.Excluding(p => p.Id));
 
-            Dal.GetOrderById(2).Should()
+            DalConnected.GetOrderById(2).Should()
                 .BeEquivalentTo(order2, config =>
                     config.Excluding(p => p.Id));
         }
@@ -166,12 +164,12 @@ namespace DemoProject.Tests
 
             var order1 = DataSource.Orders[0];
             var order2 = DataSource.Orders[1];
-            Dal.AddOrder(order1);
-            Dal.AddOrder(order2);
+            DalConnected.AddOrder(order1);
+            DalConnected.AddOrder(order2);
 
-            Dal.DeleteOrder(1).Should().BeTrue();
+            DalConnected.DeleteOrder(1).Should().BeTrue();
 
-            Dal.GetAllOrders().Should()
+            DalConnected.GetAllOrders().Should()
                 .BeEquivalentTo(new List<Order> { order2 },
                     config => config
                         .Excluding(p => p.Id));
@@ -187,13 +185,13 @@ namespace DemoProject.Tests
             List<Order> expected)
         {
             AddProducts();
-            
-            Dal.AddOrder(DataSource.Orders[0]);
-            Dal.AddOrder(DataSource.Orders[1]);
-            Dal.AddOrder(DataSource.Orders[2]);
-            Dal.AddOrder(DataSource.Orders[3]);
 
-            var result = Dal.GetFilteredOrders(
+            DalConnected.AddOrder(DataSource.Orders[0]);
+            DalConnected.AddOrder(DataSource.Orders[1]);
+            DalConnected.AddOrder(DataSource.Orders[2]);
+            DalConnected.AddOrder(DataSource.Orders[3]);
+
+            var result = DalConnected.GetFilteredOrders(
                 year: year,
                 month: month,
                 status: status,
@@ -201,8 +199,8 @@ namespace DemoProject.Tests
                 );
 
             result.Should()
-                .BeEquivalentTo(expected,config => config
-                        .Excluding(p => p.Id));
+                .BeEquivalentTo(expected, config => config
+                         .Excluding(p => p.Id));
         }
 
         [Theory]
@@ -216,19 +214,19 @@ namespace DemoProject.Tests
         {
             AddProducts();
 
-            Dal.AddOrder(DataSource.Orders[0]);
-            Dal.AddOrder(DataSource.Orders[1]);
-            Dal.AddOrder(DataSource.Orders[2]);
-            Dal.AddOrder(DataSource.Orders[3]);
+            DalConnected.AddOrder(DataSource.Orders[0]);
+            DalConnected.AddOrder(DataSource.Orders[1]);
+            DalConnected.AddOrder(DataSource.Orders[2]);
+            DalConnected.AddOrder(DataSource.Orders[3]);
 
-            Dal.DeleteOrders(
+            DalConnected.DeleteOrders(
                 year: year,
                 month: month,
                 status: status,
                 product: product
             );
 
-            var result = Dal.GetFilteredOrders();
+            var result = DalConnected.GetFilteredOrders();
 
             result.Should()
                 .BeEquivalentTo(expected, config => config
@@ -237,8 +235,14 @@ namespace DemoProject.Tests
 
         private void AddProducts()
         {
-            Dal.AddProduct(DataSource.Products[0]);
-            Dal.AddProduct(DataSource.Products[1]);
+            DalConnected.AddProduct(DataSource.Products[0]);
+            DalConnected.AddProduct(DataSource.Products[1]);
+        }
+
+        private void AddProducts2()
+        {
+            DalDisconnected.AddProduct(DataSource.Products[0]);
+            DalDisconnected.AddProduct(DataSource.Products[1]);
         }
 
         public static IEnumerable<object[]> GetFilteredOrdersTestData()

@@ -3,7 +3,10 @@ AS
  BEGIN
 	TRUNCATE TABLE Orders
 
-	ALTER TABLE Orders DROP CONSTRAINT FK_Orders_Products
+	IF (OBJECT_ID('FK_Orders_Products', 'F') IS NOT NULL)
+	BEGIN
+    ALTER TABLE Orders DROP CONSTRAINT FK_Orders_Products
+	END
 
 	TRUNCATE TABLE Products
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -8,11 +7,11 @@ using DemoProject.Models;
 
 namespace DemoProject
 {
-    public class DAL
+    public class DalConnected
     {
         private readonly SqlConnection _connection;
 
-        public DAL(SqlConnection connection)
+        public DalConnected(SqlConnection connection)
         {
             _connection = connection;
         }
@@ -242,8 +241,6 @@ namespace DemoProject
             OrderStatus? status = null,
             int? product = null)
         {
-            var orders = new List<Order>();
-
             using var cmd = new SqlCommand();
             cmd.Connection = _connection;
 
